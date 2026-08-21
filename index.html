@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sounds in Town — Live Music in Santa Barbara</title>
+  <meta name="description" content="Find live music near you. Sounds in Town connects Santa Barbara music fans with local bands and venues." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --ink:       #0e0c0a;
+      --ink-soft:  #1c1a17;
+      --gold:      #e8a832;
+      --gold-dim:  #a87820;
+      --ember:     #c4512a;
+      --paper:     #f5f0e8;
+      --paper-dim: #e8e2d6;
+      --smoke:     #6b6560;
+      --glass:     rgba(255,255,255,0.06);
+      --serif:     'Playfair Display', Georgia, serif;
+      --sans:      'Inter', system-ui, sans-serif;
+      --mono:      'Space Mono', monospace;
+      --radius:    6px;
+      --max:       1100px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--ink);
+      color: var(--paper);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(14,12,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(232,168,50,0.12);
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+    .nav-links {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--paper-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold);
+      color: var(--ink) !important;
+      padding: 8px 20px;
+      border-radius: var(--radius);
+      font-weight: 600 !important;
+    }
+    .nav-cta:hover { background: #f0b840 !important; color: var(--ink) !important; }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      overflow: hidden;
+      background: var(--gold);
+      padding: 10px 0;
+      margin-top: 64px;
+    }
+    .marquee-track {
+      display: flex; gap: 0;
+      animation: scroll-left 28s linear infinite;
+      width: max-content;
+    }
+    .marquee-track span {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      padding: 0 32px;
+      white-space: nowrap;
+    }
+    .marquee-track span::before { content: "★ "; }
+    @keyframes scroll-left {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track { animation: none; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 88vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(232,168,50,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      opacity: 0.9;
+    }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      max-width: 820px;
+      margin-bottom: 28px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--paper-dim);
+      max-width: 520px;
+      margin-bottom: 48px;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: #f0b840; transform: translateY(-1px); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent;
+      color: var(--paper);
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 13px 28px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(245,240,232,0.25);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+    .hero-stats {
+      display: flex; gap: 48px; margin-top: 64px;
+      padding-top: 48px;
+      border-top: 1px solid rgba(245,240,232,0.1);
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--smoke);
+      margin-top: 6px;
+    }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 100px 24px; }
+    .container { max-width: var(--max); margin: 0 auto; }
+    .section-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--paper-dim);
+      max-width: 540px;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* ── FOR SECTION ── */
+    .for-section { background: var(--ink-soft); }
+    .for-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 60px;
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .for-card {
+      background: var(--ink);
+      padding: 44px 36px;
+      border-right: 1px solid rgba(245,240,232,0.08);
+      transition: background 0.25s;
+    }
+    .for-card:last-child { border-right: none; }
+    .for-card:hover { background: rgba(232,168,50,0.04); }
+    .for-icon {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .for-card h3 {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--paper);
+    }
+    .for-card p {
+      font-size: 0.9rem;
+      color: var(--smoke);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .for-list {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .for-list li {
+      font-size: 0.85rem;
+      color: var(--paper-dim);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .for-list li::before {
+      content: '';
+      width: 18px; height: 1px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { background: var(--ink); }
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      margin-top: 64px;
+      position: relative;
+    }
+    .how-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px; left: calc(12.5% + 16px); right: calc(12.5% + 16px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), var(--gold-dim), transparent);
+      opacity: 0.4;
+    }
+    .how-step { text-align: center; position: relative; }
+    .how-num {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      width: 56px; height: 56px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      background: var(--ink);
+      position: relative; z-index: 1;
+    }
+    .how-step h4 {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .how-step p {
+      font-size: 0.85rem;
+      color: var(--smoke);
+      line-height: 1.65;
+    }
+
+    /* ── SCENE SECTION ── */
+    .scene-section {
+      background: var(--ink-soft);
+      border-top: 1px solid rgba(232,168,50,0.1);
+      border-bottom: 1px solid rgba(232,168,50,0.1);
+    }
+    .scene-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .scene-copy .section-sub { max-width: 100%; }
+    .scene-visual {
+      background: var(--ink);
+      border: 1px solid rgba(232,168,50,0.15);
+      border-radius: 12px;
+      padding: 32px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+    }
+    .scene-show {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(245,240,232,0.06);
+    }
+    .scene-show:last-child { border-bottom: none; }
+    .show-info {}
+    .show-band { font-size: 0.9rem; font-weight: 700; color: var(--paper); margin-bottom: 4px; font-family: var(--sans); }
+    .show-venue { font-size: 0.75rem; color: var(--smoke); }
+    .show-meta { text-align: right; }
+    .show-date { font-size: 0.7rem; color: var(--gold); letter-spacing: 0.05em; }
+    .show-genre { font-size: 0.65rem; color: var(--smoke); margin-top: 4px; }
+    .scene-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 16px;
+    }
+
+    /* ── NOTIFY SECTION ── */
+    .notify-section {
+      background: var(--ink);
+      text-align: center;
+    }
+    .notify-section .section-title { margin-bottom: 12px; }
+    .notify-section .section-sub { margin: 0 auto 40px; }
+    .notify-form {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      max-width: 480px; margin: 0 auto 16px;
+    }
+    .notify-input {
+      flex: 1; min-width: 240px;
+      background: var(--ink-soft);
+      border: 1px solid rgba(245,240,232,0.15);
+      color: var(--paper);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      padding: 13px 20px;
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .notify-input:focus { border-color: var(--gold); }
+    .notify-input::placeholder { color: var(--smoke); }
+    .notify-note {
+      font-size: 0.75rem;
+      color: var(--smoke);
+      margin-top: 12px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink-soft);
+      border-top: 1px solid rgba(245,240,232,0.07);
+      padding: 48px 24px;
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 24px;
+    }
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .footer-links {
+      display: flex; gap: 24px; list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--smoke);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--paper); }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--smoke);
+    }
+
+    /* ── PAGES (shown/hidden via hash) ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── BANDS PAGE ── */
+    .bands-hero {
+      padding: 140px 24px 80px;
+      text-align: center;
+    }
+    .bands-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .band-card {
+      background: var(--ink-soft);
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: 10px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .band-card:hover { border-color: rgba(232,168,50,0.3); transform: translateY(-2px); }
+    .band-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-dim), var(--ember));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+    .band-name {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .band-genre {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .band-bio {
+      font-size: 0.83rem;
+      color: var(--smoke);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .band-next {
+      font-size: 0.75rem;
+      color: var(--paper-dim);
+    }
+    .band-next span { color: var(--gold); }
+
+    /* ── VENUES PAGE ── */
+    .venue-card {
+      background: var(--ink-soft);
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: 10px;
+      padding: 32px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+    .venue-card:hover { border-color: rgba(232,168,50,0.25); }
+    .venue-icon {
+      width: 60px; height: 60px;
+      background: var(--ink);
+      border: 1px solid rgba(232,168,50,0.2);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+    }
+    .venue-name {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .venue-type {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .venue-desc {
+      font-size: 0.85rem;
+      color: var(--smoke);
+      line-height: 1.6;
+    }
+    .venue-tags {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+    }
+    .tag {
+      font-size: 0.7rem;
+      background: rgba(232,168,50,0.08);
+      border: 1px solid rgba(232,168,50,0.15);
+      color: var(--paper-dim);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .for-grid { grid-template-columns: 1fr; }
+      .for-card { border-right: none; border-bottom: 1px solid rgba(245,240,232,0.08); }
+      .how-steps { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .how-steps::before { display: none; }
+      .scene-inner { grid-template-columns: 1fr; }
+      .hero-stats { gap: 28px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo" onclick="showPage('home')">Sounds in Town</a>
+    <ul class="nav-links">
+      <li><a href="#" onclick="showPage('home')">Home</a></li>
+      <li><a href="#" onclick="showPage('bands')">Bands</a></li>
+      <li><a href="#" onclick="showPage('venues')">Venues</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#notify" class="nav-cta">Get Early Access</a></li>
+    </ul>
+  </nav>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Live Shows Near You</span>
+      <span>Local Bands</span>
+      <span>Santa Barbara Venues</span>
+      <span>Free to Download</span>
+      <span>Band Profiles</span>
+      <span>Follow Your Favorites</span>
+      <span>Fans, Bands & Stages</span>
+      <span>Live Shows Near You</span>
+      <span>Local Bands</span>
+      <span>Santa Barbara Venues</span>
+      <span>Free to Download</span>
+      <span>Band Profiles</span>
+      <span>Follow Your Favorites</span>
+      <span>Fans, Bands & Stages</span>
+    </div>
+  </div>
+
+  <!-- ══ HOME PAGE ══ -->
+  <div id="page-home" class="page active">
+
+    <!-- HERO -->
+    <section class="hero">
+      <p class="hero-eyebrow">Santa Barbara · Live Music · Coming Soon</p>
+      <h1>Your city's live music,<br><em>all in one place</em></h1>
+      <p class="hero-sub">Sounds in Town connects music fans with local bands and venues. Never miss a show again.</p>
+      <div class="hero-actions">
+        <a href="#notify" class="btn-primary">🎵 Get Early Access</a>
+        <a href="https://instagram.com/soundsintown" target="_blank" class="btn-ghost">Follow on Instagram</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">50+</div>
+          <div class="stat-label">Local Bands</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">30+</div>
+          <div class="stat-label">Venues</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">Free</div>
+          <div class="stat-label">To Download</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOR EVERYONE -->
+    <section class="for-section">
+      <div class="container">
+        <p class="section-eyebrow">Who It's For</p>
+        <h2 class="section-title">Built for everyone<br>in the local music scene</h2>
+        <p class="section-sub">Whether you're looking for a show tonight or trying to grow your audience, Sounds in Town has you covered.</p>
+        <div class="for-grid">
+          <div class="for-card">
+            <span class="for-icon">🎧</span>
+            <h3>Music Fans</h3>
+            <p>Discover live music happening near you tonight, this weekend, or any night you're looking for something to do.</p>
+            <ul class="for-list">
+              <li>Browse shows by date and venue</li>
+              <li>Follow your favorite bands</li>
+              <li>Never miss a show</li>
+            </ul>
+          </div>
+          <div class="for-card">
+            <span class="for-icon">🎸</span>
+            <h3>Bands</h3>
+            <p>Create your profile, post your shows, and build your local following. Get in front of fans actively looking for live music.</p>
+            <ul class="for-list">
+              <li>Free band profile</li>
+              <li>Add shows in seconds</li>
+              <li>Grow your fanbase</li>
+            </ul>
+          </div>
+          <div class="for-card">
+            <span class="for-icon">🏛️</span>
+            <h3>Venues</h3>
+            <p>List your venue, promote your events, and reach music fans in Santa Barbara who are deciding where to go out tonight.</p>
+            <ul class="for-list">
+              <li>Venue listing and profile</li>
+              <li>Event promotion</li>
+              <li>Reach local music fans</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE PREVIEW -->
+    <section class="scene-section">
+      <div class="container">
+        <div class="scene-inner">
+          <div class="scene-copy">
+            <p class="section-eyebrow">The Scene</p>
+            <h2 class="section-title">Santa Barbara's live music scene deserves better</h2>
+            <p class="section-sub">Great music happens every night in this city — at bars on State Street, wine rooms in the Funk Zone, rooftop venues above the harbor. Sounds in Town puts it all in one place so nothing gets missed.</p>
+            <br/>
+            <a href="#notify" class="btn-primary" style="margin-top:16px">Join the Early Access List</a>
+          </div>
+          <div class="scene-visual">
+            <div class="scene-label">↯ Upcoming Shows</div>
+            <div class="scene-show">
+              <div class="show-info">
+                <div class="show-band">The Midnight Ramblers</div>
+                <div class="show-venue">SOhO Restaurant & Music Club</div>
+              </div>
+              <div class="show-meta">
+                <div class="show-date">FRI · 9PM</div>
+                <div class="show-genre">Blues / Rock</div>
+              </div>
+            </div>
+            <div class="scene-show">
+              <div class="show-info">
+                <div class="show-band">Luna Collective</div>
+                <div class="show-venue">Funk Zone Wine Bar</div>
+              </div>
+              <div class="show-meta">
+                <div class="show-date">SAT · 8PM</div>
+                <div class="show-genre">Indie Folk</div>
+              </div>
+            </div>
+            <div class="scene-show">
+              <div class="show-info">
+                <div class="show-band">Brass & Thunder</div>
+                <div class="show-venue">Santa Barbara Bowl</div>
+              </div>
+              <div class="show-meta">
+                <div class="show-date">SUN · 7PM</div>
+                <div class="show-genre">Jazz / Fusion</div>
+              </div>
+            </div>
+            <div class="scene-show">
+              <div class="show-info">
+                <div class="show-band">Desert Waves</div>
+                <div class="show-venue">The Press Room</div>
+              </div>
+              <div class="show-meta">
+                <div class="show-date">MON · 9PM</div>
+                <div class="show-genre">Psych Rock</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section" id="how">
+      <div class="container">
+        <p class="section-eyebrow">How It Works</p>
+        <h2 class="section-title">Simple by design</h2>
+        <p class="section-sub">Finding live music shouldn't require five apps and a Google search. We built something better.</p>
+        <div class="how-steps">
+          <div class="how-step">
+            <div class="how-num">01</div>
+            <h4>Download the app</h4>
+            <p>Free on iOS and Android. Sign up in seconds as a fan, band, or venue.</p>
+          </div>
+          <div class="how-step">
+            <div class="how-num">02</div>
+            <h4>Find shows near you</h4>
+            <p>Browse upcoming shows by date, genre, venue, or band. See what's happening tonight.</p>
+          </div>
+          <div class="how-step">
+            <div class="how-num">03</div>
+            <h4>Follow the music</h4>
+            <p>Follow bands you love and get notified when they add a new show. Never miss them again.</p>
+          </div>
+          <div class="how-step">
+            <div class="how-num">04</div>
+            <h4>Show up and enjoy</h4>
+            <p>Get directions to the venue, see ticket info, and go experience live music.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTIFY -->
+    <section class="notify-section" id="notify">
+      <div class="container">
+        <p class="section-eyebrow">Early Access</p>
+        <h2 class="section-title">Be first through the door</h2>
+        <p class="section-sub">Join the early access list and be first to know when we launch. It's free.</p>
+        <div class="notify-form">
+          <input type="email" class="notify-input" placeholder="your@email.com" />
+          <button class="btn-primary" onclick="handleSignup(this)">Notify Me</button>
+        </div>
+        <p class="notify-note">No spam, ever. Unsubscribe anytime.</p>
+      </div>
+    </section>
+
+  </div><!-- end home -->
+
+  <!-- ══ BANDS PAGE ══ -->
+  <div id="page-bands" class="page">
+    <div class="bands-hero container">
+      <p class="section-eyebrow">Santa Barbara Bands</p>
+      <h1 class="section-title">The local talent</h1>
+      <p class="section-sub">Discover the bands playing in Santa Barbara's bars, stages, and music venues. Follow your favorites and never miss a show.</p>
+    </div>
+    <div class="container" style="padding-bottom:100px">
+      <div class="bands-grid">
+        <div class="band-card">
+          <div class="band-avatar">🎸</div>
+          <div class="band-name">The Midnight Ramblers</div>
+          <div class="band-genre">Blues · Rock</div>
+          <div class="band-bio">Santa Barbara's favorite blues-rock outfit. Tight grooves, raw energy, and a setlist that keeps the dance floor moving until last call.</div>
+          <div class="band-next">Next show: <span>SOhO · Friday 9PM</span></div>
+        </div>
+        <div class="band-card">
+          <div class="band-avatar">🎹</div>
+          <div class="band-name">Luna Collective</div>
+          <div class="band-genre">Indie Folk · Ambient</div>
+          <div class="band-bio">Five-piece indie folk group known for their lush arrangements and luminous harmonies. Regular performers in the Funk Zone.</div>
+          <div class="band-next">Next show: <span>Funk Zone Wine Bar · Sat 8PM</span></div>
+        </div>
+        <div class="band-card">
+          <div class="band-avatar">🎷</div>
+          <div class="band-name">Brass & Thunder</div>
+          <div class="band-genre">Jazz · Fusion</div>
+          <div class="band-bio">A seven-piece jazz fusion ensemble bringing big-band energy to intimate venues. Acclaimed residency at the Santa Barbara Bowl.</div>
+          <div class="band-next">Next show: <span>SB Bowl · Sunday 7PM</span></div>
+        </div>
+        <div class="band-card">
+          <div class="band-avatar">🌊</div>
+          <div class="band-name">Desert Waves</div>
+          <div class="band-genre">Psych Rock · Surf</div>
+          <div class="band-bio">Channeling sun-bleached California desert vibes through fuzzed-out guitars and hypnotic rhythms. A cult following on the local scene.</div>
+          <div class="band-next">Next show: <span>The Press Room · Mon 9PM</span></div>
+        </div>
+        <div class="band-card">
+          <div class="band-avatar">🎻</div>
+          <div class="band-name">El Camino String Quartet</div>
+          <div class="band-genre">Classical · Contemporary</div>
+          <div class="band-bio">Classical training meets contemporary California soul. Known for bridging Bach and Bill Withers in the same set.</div>
+          <div class="band-next">Next show: <span>Lobero Theatre · Wed 7:30PM</span></div>
+        </div>
+        <div class="band-card">
+          <div class="band-avatar">🥁</div>
+          <div class="band-name">State Street Serenade</div>
+          <div class="band-genre">R&B · Soul</div>
+          <div class="band-bio">Groove-forward R&B from the heart of State Street. Brings old-school soul energy to every room they play.</div>
+          <div class="band-next">Next show: <span>Velvet Jones · Thu 10PM</span></div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:60px">
+        <p style="color:var(--smoke); margin-bottom:20px; font-size:0.9rem">Are you a band? Get listed for free when we launch.</p>
+        <a href="#" onclick="showPage('home'); setTimeout(()=>document.getElementById('notify').scrollIntoView({behavior:'smooth'}),100)" class="btn-primary">Join Early Access</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ VENUES PAGE ══ -->
+  <div id="page-venues" class="page">
+    <div class="bands-hero container">
+      <p class="section-eyebrow">Santa Barbara Venues</p>
+      <h1 class="section-title">Where the music lives</h1>
+      <p class="section-sub">From intimate wine bars in the Funk Zone to iconic stages on State Street — every room where live music happens in Santa Barbara.</p>
+    </div>
+    <div class="container" style="padding-bottom:100px">
+      <div class="venue-card">
+        <div class="venue-icon">🎵</div>
+        <div>
+          <div class="venue-name">SOhO Restaurant & Music Club</div>
+          <div class="venue-type">Live Music Club</div>
+          <div class="venue-desc">Santa Barbara's premier live music venue. Full restaurant, full bar, and a stage that's hosted national touring acts and the best local talent for over two decades.</div>
+          <div class="venue-tags">
+            <span class="tag">Live Music Nightly</span>
+            <span class="tag">Full Bar</span>
+            <span class="tag">Restaurant</span>
+            <span class="tag">State Street</span>
+          </div>
+        </div>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">🏟️</div>
+        <div>
+          <div class="venue-name">Santa Barbara Bowl</div>
+          <div class="venue-type">Outdoor Amphitheater</div>
+          <div class="venue-desc">An iconic outdoor amphitheater nestled in the Santa Barbara foothills. 4,500-capacity venue with stunning views and legendary acoustics.</div>
+          <div class="venue-tags">
+            <span class="tag">Outdoor</span>
+            <span class="tag">4,500 Capacity</span>
+            <span class="tag">National Acts</span>
+          </div>
+        </div>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">🍷</div>
+        <div>
+          <div class="venue-name">Funk Zone Wine Bars</div>
+          <div class="venue-type">Wine Bar / Live Music</div>
+          <div class="venue-desc">The Funk Zone's collection of tasting rooms and wine bars regularly features local acoustic acts, jazz trios, and singer-songwriters in an intimate setting.</div>
+          <div class="venue-tags">
+            <span class="tag">Intimate</span>
+            <span class="tag">Wine & Cocktails</span>
+            <span class="tag">Funk Zone</span>
+            <span class="tag">Acoustic</span>
+          </div>
+        </div>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">🎭</div>
+        <div>
+          <div class="venue-name">Lobero Theatre</div>
+          <div class="venue-type">Historic Theater</div>
+          <div class="venue-desc">California's oldest continuously operating theater. Intimate 680-seat venue with exceptional acoustics. Home to chamber music, jazz, and world music performances.</div>
+          <div class="venue-tags">
+            <span class="tag">Historic</span>
+            <span class="tag">680 Seats</span>
+            <span class="tag">Downtown</span>
+          </div>
+        </div>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">🎸</div>
+        <div>
+          <div class="venue-name">Velvet Jones</div>
+          <div class="venue-type">Bar / Music Venue</div>
+          <div class="venue-desc">A beloved dive bar and music venue on State Street. The heartbeat of Santa Barbara's indie, punk, and alternative scene. No frills, all feel.</div>
+          <div class="venue-tags">
+            <span class="tag">Bar</span>
+            <span class="tag">Indie / Punk</span>
+            <span class="tag">State Street</span>
+            <span class="tag">Late Night</span>
+          </div>
+        </div>
+      </div>
+      <div class="venue-card">
+        <div class="venue-icon">📰</div>
+        <div>
+          <div class="venue-name">The Press Room</div>
+          <div class="venue-type">Bar / Music Venue</div>
+          <div class="venue-desc">A cozy downtown bar with a rotating lineup of local bands. Known for discovering new talent and keeping the late-night scene alive on weekends.</div>
+          <div class="venue-tags">
+            <span class="tag">Bar</span>
+            <span class="tag">Local Talent</span>
+            <span class="tag">Downtown</span>
+            <span class="tag">Late Night</span>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:60px">
+        <p style="color:var(--smoke); margin-bottom:20px; font-size:0.9rem">Own a venue? Get listed for free when we launch.</p>
+        <a href="#" onclick="showPage('home'); setTimeout(()=>document.getElementById('notify').scrollIntoView({behavior:'smooth'}),100)" class="btn-primary">Join Early Access</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">Sounds in Town</div>
+      <ul class="footer-links">
+        <li><a href="#" onclick="showPage('bands')">Bands</a></li>
+        <li><a href="#" onclick="showPage('venues')">Venues</a></li>
+        <li><a href="https://instagram.com/soundsintown" target="_blank">Instagram</a></li>
+        <li><a href="mailto:hello@soundsintown.app">Contact</a></li>
+      </ul>
+      <p class="footer-copy">© 2026 Sounds in Town · Santa Barbara, CA</p>
+    </div>
+  </footer>
+
+  <script>
+    function showPage(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+      document.getElementById('page-' + name).classList.add('active')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    function handleSignup(btn) {
+      const input = btn.previousElementSibling
+      if (!input.value || !input.value.includes('@')) {
+        input.style.borderColor = 'var(--ember)'
+        input.focus()
+        return
+      }
+      btn.textContent = '✓ You\'re on the list!'
+      btn.style.background = '#22c55e'
+      input.disabled = true
+      btn.disabled = true
+    }
+
+    // Smooth hash scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const id = a.getAttribute('href').slice(1)
+        const el = document.getElementById(id)
+        if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }) }
+      })
+    })
+  </script>
+</body>
+</html>
