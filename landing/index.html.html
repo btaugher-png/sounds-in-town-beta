@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Landing Page — Sounds in Town Team</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink:      #0e0c0a;
+      --ink-soft: #1c1a17;
+      --gold:     #e8a832;
+      --paper:    #f5f0e8;
+      --paper-dim:#e8e2d6;
+      --smoke:    #6b6560;
+      --ember:    #c4512a;
+      --serif:    'Playfair Display', Georgia, serif;
+      --sans:     'Inter', system-ui, sans-serif;
+      --mono:     'Space Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--sans); background: var(--ink); color: var(--paper); -webkit-font-smoothing: antialiased; }
+
+    /* Team nav bar */
+    .team-bar {
+      background: rgba(196,81,42,0.15);
+      border-bottom: 1px solid rgba(196,81,42,0.3);
+      padding: 10px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .team-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ember);
+    }
+    .team-links { display: flex; gap: 24px; }
+    .team-links a {
+      font-size: 0.75rem;
+      color: var(--smoke);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .team-links a:hover { color: var(--paper); }
+    .team-links a.active { color: var(--ember); }
+
+    /* Annotation overlay */
+    .page-wrap { position: relative; }
+    .annotation {
+      position: absolute;
+      background: rgba(196,81,42,0.12);
+      border: 1px dashed rgba(196,81,42,0.5);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--ember);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      pointer-events: none;
+      z-index: 50;
+      white-space: nowrap;
+    }
+
+    /* Notes panel */
+    .notes-panel {
+      background: var(--ink-soft);
+      border-top: 1px solid rgba(196,81,42,0.2);
+      padding: 40px;
+    }
+    .notes-inner { max-width: 1100px; margin: 0 auto; }
+    .notes-title {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 24px;
+    }
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .note-card {
+      background: var(--ink);
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .note-card h4 {
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--paper);
+    }
+    .note-card p {
+      font-size: 0.8rem;
+      color: var(--smoke);
+      line-height: 1.6;
+    }
+    .note-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+    .tag-copy     { background: rgba(232,168,50,0.1);  color: var(--gold); }
+    .tag-design   { background: rgba(59,139,212,0.1);  color: #5ba3e0; }
+    .tag-ux       { background: rgba(196,81,42,0.1);   color: var(--ember); }
+    .tag-todo     { background: rgba(107,101,96,0.2);  color: var(--smoke); }
+
+    /* Reuse main site styles inline below */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      background: rgba(14,12,10,0.85);
+      border-bottom: 1px solid rgba(232,168,50,0.12);
+    }
+    .nav-logo { font-family: var(--serif); font-size: 1.15rem; font-weight: 700; color: var(--gold); text-decoration: none; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--paper-dim); text-decoration: none; }
+    .marquee-wrap { overflow: hidden; background: var(--gold); padding: 10px 0; }
+    .marquee-track { display: flex; animation: scroll-left 28s linear infinite; width: max-content; }
+    .marquee-track span { font-family: var(--mono); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); padding: 0 32px; white-space: nowrap; }
+    .marquee-track span::before { content: "★ "; }
+    @keyframes scroll-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .hero { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 24px 40px; }
+    .hero-eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; }
+    .hero h1 { font-family: var(--serif); font-size: clamp(3rem, 8vw, 6.5rem); font-weight: 900; line-height: 1.0; letter-spacing: -0.02em; max-width: 820px; margin-bottom: 28px; }
+    .hero h1 em { font-style: italic; color: var(--gold); }
+    .hero-sub { font-size: clamp(1rem, 2.5vw, 1.2rem); color: var(--paper-dim); max-width: 520px; margin-bottom: 48px; font-weight: 300; line-height: 1.7; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--ink); font-size: 0.9rem; font-weight: 600; padding: 14px 32px; border-radius: 6px; text-decoration: none; }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--paper); font-size: 0.9rem; font-weight: 500; padding: 13px 28px; border-radius: 6px; border: 1px solid rgba(245,240,232,0.25); text-decoration: none; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .hero-stats { display: flex; gap: 48px; margin-top: 64px; padding-top: 48px; border-top: 1px solid rgba(245,240,232,0.1); }
+    .stat-num { font-family: var(--serif); font-size: 2.2rem; font-weight: 700; color: var(--gold); }
+    .stat-label { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--smoke); margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+  <!-- Team bar -->
+  <div class="team-bar">
+    <span class="team-label">⬡ Team View — Not Public</span>
+    <div class="team-links">
+      <a href="/sounds-in-town-beta/">Live Site</a>
+      <a href="/sounds-in-town-beta/landing/" class="active">Landing Page</a>
+      <a href="/sounds-in-town-beta/logo/">Logo & Brand</a>
+    </div>
+  </div>
+
+  <!-- Live landing page preview with annotations -->
+  <div class="page-wrap">
+
+    <!-- Annotations -->
+    <div class="annotation" style="top:80px; left:20px;">← Hero section</div>
+    <div class="annotation" style="top:210px; left:20px;">← CTA buttons</div>
+
+    <!-- Nav (static preview) -->
+    <nav>
+      <a class="nav-logo">Sounds in Town</a>
+      <ul class="nav-links">
+        <li><a>Home</a></li>
+        <li><a>Bands</a></li>
+        <li><a>Venues</a></li>
+        <li><a>How It Works</a></li>
+      </ul>
+    </nav>
+
+    <!-- Marquee -->
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <span>Live Shows Near You</span><span>Local Bands</span><span>Santa Barbara Venues</span>
+        <span>Free to Download</span><span>Band Profiles</span><span>Follow Your Favorites</span>
+        <span>Fans, Bands & Stages</span><span>Live Shows Near You</span><span>Local Bands</span>
+        <span>Santa Barbara Venues</span><span>Free to Download</span><span>Band Profiles</span>
+        <span>Follow Your Favorites</span><span>Fans, Bands & Stages</span>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <p class="hero-eyebrow">Santa Barbara · Live Music · Coming Soon</p>
+      <h1>Your city's live music,<br><em>all in one place</em></h1>
+      <p class="hero-sub">Sounds in Town connects music fans with local bands and venues. Never miss a show again.</p>
+      <div class="hero-actions">
+        <a class="btn-primary">🎵 Get Early Access</a>
+        <a class="btn-ghost">Follow on Instagram</a>
+      </div>
+      <div class="hero-stats">
+        <div style="text-align:center"><div class="stat-num">50+</div><div class="stat-label">Local Bands</div></div>
+        <div style="text-align:center"><div class="stat-num">30+</div><div class="stat-label">Venues</div></div>
+        <div style="text-align:center"><div class="stat-num">Free</div><div class="stat-label">To Download</div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Team notes -->
+  <div class="notes-panel">
+    <div class="notes-inner">
+      <p class="notes-title">⬡ Team Notes</p>
+      <div class="notes-grid">
+        <div class="note-card">
+          <span class="note-tag tag-copy">Copy</span>
+          <h4>Tagline</h4>
+          <p>Current: "Your city's live music, all in one place." Options in review: "Fans, bands, and stages." — decision pending.</p>
+        </div>
+        <div class="note-card">
+          <span class="note-tag tag-design">Design</span>
+          <h4>Hero stats</h4>
+          <p>50+ bands, 30+ venues are placeholder numbers. Replace with real counts before launch.</p>
+        </div>
+        <div class="note-card">
+          <span class="note-tag tag-ux">UX</span>
+          <h4>Email signup</h4>
+          <p>"Get Early Access" CTA needs to connect to Mailchimp or Supabase before launch. Currently front-end only.</p>
+        </div>
+        <div class="note-card">
+          <span class="note-tag tag-todo">To Do</span>
+          <h4>Instagram link</h4>
+          <p>Update the Instagram button href once the @soundsintown account is live and confirmed.</p>
+        </div>
+        <div class="note-card">
+          <span class="note-tag tag-copy">Copy</span>
+          <h4>Marquee text</h4>
+          <p>"Fans, Bands & Stages" is the current third item in the tagline ticker. Update if tagline changes.</p>
+        </div>
+        <div class="note-card">
+          <span class="note-tag tag-todo">To Do</span>
+          <h4>Real bands & venues</h4>
+          <p>Bands and Venues pages use placeholder data. Replace with real Santa Barbara listings before launch.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
